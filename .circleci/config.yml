@@ -432,47 +432,7 @@ jobs:
 workflows:
   tests:
     jobs:
-      - build-manylinux:
-          name: build-manylinux1_<< matrix.architecture >>-py3<< matrix.python-minor >>
-          matrix:
-            parameters:
-              python-minor: [6, 7, 8, 9]
-              architecture: ["x86_64"]
-      - test-linux:
-          # We could break each of these out into seperate jobs so that we
-          # don't need to wait for the entire above matrix to complete, but
-          # this is cleaner
-          requires:
-            - build-manylinux
-          matrix:
-            parameters:
-              # We could make the second numpy version unbounded, but for now
-              # let's pin it for reproducability
-              numpy-version: ['1.17.3', '1.18.5', '1.19.5', '1.20.2']
-              image:
-                - 3.9-buster
-                - 3.8-buster
-                - 3.7-stretch
-                - 3.6-jessie
-            exclude:
-              - numpy-version: '1.20.2'
-                image: 3.6-jessie
-              - numpy-version: '1.18.5'
-                image: 3.9-buster
-              - numpy-version: '1.17.3'
-                image: 3.9-buster
-      - test-osx:
-          matrix:
-            parameters:
-              python-version: ["3.6.8", "3.7.5", "3.8.6", "3.9.0"]
-      - test-win:
-          matrix:
-            parameters:
-              python-version: ["3.6.8", "3.7.5", "3.8.6", "3.9.0"]
-              architecture: ["", "x86"]
-      - build-sdist
       - test-doctest
-      - test-linux-cpp11
 
   deploy:
     jobs:
